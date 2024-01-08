@@ -10,6 +10,7 @@ import "ngui"
 import "rlutil"
 
 camera: rl.Camera2D
+timescale: f32
 
 main :: proc() {
     when ODIN_DEBUG {
@@ -61,7 +62,7 @@ main :: proc() {
     for !rl.WindowShouldClose() {
         defer free_all(context.temp_allocator)
 
-        dt := rl.GetFrameTime()
+        dt := rl.GetFrameTime() * timescale
         game.update(dt)
 
         rlutil.profile_begin("Draw")

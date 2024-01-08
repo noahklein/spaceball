@@ -6,10 +6,13 @@ import rl "vendor:raylib"
 
 import "../rlutil"
 
-G :: 6.78
+G  :: 6.78
+RESTITUTION :: 0.5
+DT :: 1.0 / 120
 
 bodies: [dynamic]Body
 ball: Body
+dt_acc: f32
 
 Body :: struct {
     pos, vel: rl.Vector2,
@@ -27,15 +30,22 @@ init :: proc() {
 deinit :: proc() { delete(bodies) }
 
 update :: proc(dt: f32) {
+    dt_acc += dt
+    for dt_acc >= DT {
+        dt_acc -= DT
+        fixed_update()
+    }
+}
+
+fixed_update :: proc() {
     for &body in bodies {
         ab := body.pos - ball.pos
         force := G * ball.radius * body.radius / linalg.length2(ab)
         acceleration := force / ball.radius
-        ball.vel += linalg.normalize(ab) * acceleration * dt
+        ball.vel += linalg.normalize(ab) * acceleration * DT
     }
 
-    ball.pos += ball.vel * dt
-
+    ball.pos += ball.vel * DT
 
     for body in bodies {
         if rl.CheckCollisionCircles(ball.pos, ball.radius, body.pos, body.radius) {
@@ -43,7 +53,7 @@ update :: proc(dt: f32) {
             dist_overlap := (ball.pos + ball.radius*ab) - (body.pos - body.radius*ab)
 
             ball.pos -= dist_overlap
-            ball.vel -= -1.6 * linalg.dot(-ball.vel, ab) * ab
+            ball.vel -= -(1 + RESTITUTION) * linalg.dot(-ball.vel, ab) * ab
         }
     }
 
