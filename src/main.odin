@@ -62,8 +62,12 @@ main :: proc() {
     for !rl.WindowShouldClose() {
         defer free_all(context.temp_allocator)
 
-        dt := rl.GetFrameTime() * timescale
-        game.update(dt)
+
+        if rlutil.profile_begin("Update") {
+            dt := rl.GetFrameTime() * timescale
+            cursor := rl.GetScreenToWorld2D(rl.GetMousePosition(), camera)
+            game.update(dt, cursor)
+        }
 
         rlutil.profile_begin("Draw")
         rl.BeginDrawing()
@@ -71,7 +75,7 @@ main :: proc() {
         rl.ClearBackground(rl.BLACK)
 
         rl.BeginMode2D(camera)
-            game.draw2d()
+            game.world_draw2d(game.world)
         rl.EndMode2D()
 
         draw_gui(&camera)

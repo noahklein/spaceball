@@ -17,7 +17,7 @@ draw_gui :: proc(camera: ^rl.Camera2D) {
 
         if ngui.flex_row({0.25, 0.25}) {
             ngui.float(&timescale, min = 0, max = 100, label = "Timescale")
-            ngui.arrow(&game.ball.vel, "Velocity 1")
+            ngui.arrow(&game.world.ball.vel, "Velocity")
         }
     }
 }
