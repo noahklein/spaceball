@@ -1,6 +1,5 @@
 package game
 
-import "core:fmt"
 import "core:math/linalg"
 import rl "vendor:raylib"
 
@@ -21,10 +20,10 @@ Body :: struct {
 
 init :: proc() {
     reserve(&bodies, 2)
-    append(&bodies, Body{pos = 0, radius = 5, vel = {1, 0}})
-    append(&bodies, Body{pos = 20, radius = 7, vel = {3, 5}})
+    append(&bodies, Body{pos = 0, radius = 10, vel = {1, 0}})
+    append(&bodies, Body{pos = 26, radius = 12, vel = {3, 5}})
 
-    ball = Body{ pos = -7, radius = 1 }
+    ball = Body{ pos = -20, radius = 1 }
 }
 
 deinit :: proc() { delete(bodies) }
@@ -40,7 +39,7 @@ update :: proc(dt: f32) {
 fixed_update :: proc() {
     for &body in bodies {
         ab := body.pos - ball.pos
-        force := G * ball.radius * body.radius / linalg.length2(ab)
+        force := G * body_mass(ball) * body_mass(body) / linalg.length2(ab)
         acceleration := force / ball.radius
         ball.vel += linalg.normalize(ab) * acceleration * DT
     }
@@ -68,4 +67,8 @@ draw2d :: proc() {
     }
 
     rl.DrawCircleV(ball.pos, ball.radius, rl.RED)
+}
+
+body_mass :: proc(b: Body) -> f32 {
+    return b.radius * b.radius * rl.PI
 }

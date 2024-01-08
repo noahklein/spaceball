@@ -10,7 +10,7 @@ import "ngui"
 import "rlutil"
 
 camera: rl.Camera2D
-timescale: f32
+timescale: f32 = 1
 
 main :: proc() {
     when ODIN_DEBUG {
