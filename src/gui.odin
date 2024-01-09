@@ -1,8 +1,11 @@
 package main
 
+import "core:time"
 import rl "vendor:raylib"
+
 import "ngui"
 import "game"
+import "rlutil"
 
 draw_gui :: proc(camera: ^rl.Camera2D) {
     ngui.update()
@@ -18,6 +21,19 @@ draw_gui :: proc(camera: ^rl.Camera2D) {
         if ngui.flex_row({0.25, 0.25}) {
             ngui.float(&timescale, min = 0, max = 100, label = "Timescale")
             ngui.arrow(&game.world.ball.vel, "Velocity")
+        }
+
+        dur :: proc(prof: rlutil.Profile) -> f32 {
+            return f32(time.stopwatch_duration(prof.stopwatch))
+        }
+
+        if ngui.flex_row({1}) {
+            if ngui.graph_begin("Time", 256, lower = 0, upper = f32(time.Second) / 120) {
+                update := rlutil.profile_get("update")
+                draw   := rlutil.profile_get("draw")
+                ngui.graph_line("Update", dur(update), rl.BLUE)
+                ngui.graph_line("Draw", dur(draw), rl.RED)
+            }
         }
     }
 }

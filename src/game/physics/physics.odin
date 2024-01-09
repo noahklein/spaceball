@@ -7,6 +7,7 @@ import "../../rlutil"
 
 G  :: 6.78
 RESTITUTION :: 0.5
+MU :: 0.3 // Friction
 DT :: 1.0 / 120
 
 World :: struct {
@@ -17,15 +18,15 @@ World :: struct {
 
 Body :: struct {
     pos, vel: rl.Vector2,
-    radius: f32,
+    radius, angle: f32,
 }
 
 init :: proc() -> (w: World) {
     reserve(&w.bodies, 2)
-    append(&w.bodies, Body{pos = 0, radius = 10, vel = {1, 0}})
-    append(&w.bodies, Body{pos = 26, radius = 12, vel = {3, 5}})
+    append(&w.bodies, Body{ pos =  0, radius = 10, vel = {1, 0} })
+    append(&w.bodies, Body{ pos = 26, radius = 12, vel = {3, 5} })
 
-    w.ball = Body{ pos = -20, radius = 1 }
+    w.ball = Body{ pos = -20, radius = 1,  }
     return
 }
 
@@ -53,11 +54,13 @@ fixed_update :: proc(w: ^World) -> bool {
 
     for body in w.bodies {
         if rl.CheckCollisionCircles(w.ball.pos, w.ball.radius, body.pos, body.radius) {
-            ab := linalg.normalize(body.pos - w.ball.pos)
+            ab := linalg.normalize(body.pos - w.ball.pos) // Collision normal.
             dist_overlap := (w.ball.pos + w.ball.radius*ab) - (body.pos - body.radius*ab)
 
+            rel_vel := -w.ball.vel
+
             w.ball.pos -= dist_overlap
-            w.ball.vel -= -(1 + RESTITUTION) * linalg.dot(-w.ball.vel, ab) * ab
+            w.ball.vel -= -(1 + RESTITUTION) * linalg.dot(rel_vel, ab) * ab
         }
     }
 

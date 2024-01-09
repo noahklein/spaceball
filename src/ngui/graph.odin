@@ -63,24 +63,17 @@ graph_draw_rect :: proc(graph: Graph, rect: rl.Rectangle) {
             j := i + 1
             if j == line.start do continue // Don't draw line from end to start.
 
-            y1 := line.points[i]
-            y2 := line.points[j]
-
-            y1 = 1 - clamp(y1, graph.lower, graph.upper) / graph.upper
-            y2 = 1 - clamp(y2, graph.lower, graph.upper) / graph.upper
+            y1 := 1 - clamp(line.points[i], graph.lower, graph.upper) / graph.upper
+            y2 := 1 - clamp(line.points[j], graph.lower, graph.upper) / graph.upper
 
             y1 *= line_rect.height
             y2 *= line_rect.height
 
-            // x1, x2 := f32(i), f32(j)
             i_norm := i-line.start if line.start <= i  else len(line.points) + (i-line.start)
             j_norm := j-line.start if line.start <= j  else len(line.points) + (j-line.start)
 
-            x1 := f32(i_norm) * inv_line_length
-            x2 := f32(j_norm) * inv_line_length
-
-            x1 *= line_rect.width
-            x2 *= line_rect.width
+            x1 := f32(i_norm) * inv_line_length * line_rect.width
+            x2 := f32(j_norm) * inv_line_length * line_rect.width
 
             rl.DrawLineV({rect.x+x1, rect.y+y1}, {rect.x+x2, rect.y+y2}, line.color)
         }
