@@ -61,6 +61,7 @@ fixed_update :: proc(w: ^World) -> bool {
 
             w.ball.pos -= dist_overlap
             w.ball.vel -= -(1 + RESTITUTION) * linalg.dot(rel_vel, ab) * ab
+            w.ball.vel *= 0.999
         }
     }
 

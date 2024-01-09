@@ -10,6 +10,9 @@ Mode :: enum u8 { Aim, Physics }
 world: physics.World
 future: physics.World
 
+PATH_POINTS :: 1024
+ball_path: [PATH_POINTS]rl.Vector2
+
 init :: proc() {
     world = physics.init()
     future = physics.init()
@@ -30,6 +33,12 @@ update :: proc(dt: f32, cursor: rl.Vector2) {
         case .Physics:
             handle_input(&world)
             update_physics(&world, dt)
+
+            future.ball = world.ball
+            for i in 0..<PATH_POINTS {
+                physics.update(&future, dt)
+                ball_path[i] = future.ball.pos
+            }
     }
 }
 
@@ -43,6 +52,11 @@ update_physics :: proc(world: ^physics.World, dt: f32) {
 world_draw2d :: proc(w: physics.World) {
     for body in w.bodies {
         rl.DrawCircleV(body.pos, body.radius, rl.SKYBLUE)
+    }
+
+    for va, i in ball_path[:PATH_POINTS - 80] {
+        vb := ball_path[i + 1]
+        rl.DrawLineV(va, vb, rl.WHITE)
     }
 
     rl.DrawCircleV(w.ball.pos, w.ball.radius, rl.RED)

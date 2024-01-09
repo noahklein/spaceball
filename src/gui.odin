@@ -36,4 +36,6 @@ draw_gui :: proc(camera: ^rl.Camera2D) {
             }
         }
     }
+
+    rl.DrawFPS(rl.GetScreenWidth() - 80, 0)
 }

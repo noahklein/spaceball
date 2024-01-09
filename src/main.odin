@@ -1,6 +1,7 @@
 package main
 
 import "core:fmt"
+import "core:math/linalg"
 import "core:mem"
 
 import rl "vendor:raylib"
@@ -67,6 +68,8 @@ main :: proc() {
             dt := rl.GetFrameTime() * timescale
             cursor := rl.GetScreenToWorld2D(rl.GetMousePosition(), camera)
             game.update(dt, cursor)
+
+            camera.target = linalg.lerp(camera.target, game.world.ball.pos, dt)
         }
 
         rlutil.profile_begin("Draw")

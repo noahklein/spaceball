@@ -33,8 +33,7 @@ NGui :: struct {
     graph_curr: cstring,
 }
 
-init :: proc() {
-}
+init :: proc() {}
 
 deinit :: proc() {
     delete(state.panels)
@@ -164,7 +163,6 @@ float_rect :: proc(rect: rl.Rectangle, f: ^f32, min := -INF, max := INF, step: f
     press := pressed(rect)
     if press {
         state.dragging = key
-        state.drag_offset = rl.Vector2{rect.x, rect.y} - state.mouse
     }
     dragging := state.dragging == key
     if dragging {
@@ -286,7 +284,7 @@ arrow_rect :: proc(rect: rl.Rectangle, vec: ^rl.Vector2, label: cstring, max_mag
     rl.DrawLineV({center.x, arrow_rect.y + 1}, {center.x, arrow_rect.y + arrow_rect.height}, ACTIVE_BUTTON_COLOR) // vertical
     rl.DrawLineV({arrow_rect.x, center.y}, {arrow_rect.x + arrow_rect.width, center.y}, ACTIVE_BUTTON_COLOR) // horizontal
 
-    direction := linalg.normalize(vec^) if linalg.length(vec^) != 0 else {0, 1}
+    direction := linalg.normalize(vec^) if vec^ != 0 else {0, 1}
     end := center + direction * arrow_rect.height / 5
     draw_arrow(center, end, 3, TEXT_COLOR)
 
@@ -317,7 +315,6 @@ draw_arrow :: proc(start, end: rl.Vector2, thickness: f32, color: rl.Color) {
     rl.DrawLineEx(start, end, thickness, color)
     rl.DrawTriangle(v1, v2, v3, color)
 }
-
 
 // Splits a rectangle up into its label and body components.
 @(require_results)
