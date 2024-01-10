@@ -18,9 +18,10 @@ draw_gui :: proc(camera: ^rl.Camera2D) {
             ngui.float(&camera.rotation, min = -360, max = 360, label = "Angle")
         }
 
-        if ngui.flex_row({0.25, 0.25}) {
+        if ngui.flex_row({0.2, 0.4, 0.4}) {
             ngui.float(&timescale, min = 0, max = 100, label = "Timescale")
             ngui.arrow(&game.world.ball.vel, "Velocity")
+            ngui.vec2(&game.world.ball.pos, label = "Position")
         }
 
         dur :: proc(prof: rlutil.Profile) -> f32 {

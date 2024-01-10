@@ -49,7 +49,7 @@ main :: proc() {
         rl.ClearBackground(rl.BLACK)
     rl.EndDrawing()
 
-    camera = rl.Camera2D{ zoom = 10, offset = rlutil.screen_size() / 2 }
+    camera = rl.Camera2D{ zoom = 1.5, offset = rlutil.screen_size() / 2 }
 
     ngui.init()
     defer ngui.deinit()
@@ -64,7 +64,7 @@ main :: proc() {
         defer free_all(context.temp_allocator)
 
 
-        if rlutil.profile_begin("Update") {
+        if rlutil.profile_begin("update") {
             dt := rl.GetFrameTime() * timescale
             cursor := rl.GetScreenToWorld2D(rl.GetMousePosition(), camera)
             game.update(dt, cursor)
@@ -72,7 +72,7 @@ main :: proc() {
             camera.target = linalg.lerp(camera.target, game.world.ball.pos, dt)
         }
 
-        rlutil.profile_begin("Draw")
+        rlutil.profile_begin("draw")
         rl.BeginDrawing()
         defer rl.EndDrawing()
         rl.ClearBackground(rl.BLACK)
